@@ -1,18 +1,24 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
-function ExampleComponent() {
+// My Components
+import Header from './components/Header';
+import HomeGuest from './components/HomeGuest';
+import Footer from './components/Footer';
+
+function Main() {
 	return (
-		<div>
-			<h1>This is Example</h1>
-			<p>The sky is blue.</p>
-		</div>
-	)
+		<>
+			<Header />
+			<HomeGuest />
+			<Footer />
+		</>
+	);
 }
 
-const root = ReactDOM.createRoot(document.querySelector('#app'))
-root.render(<ExampleComponent />)
+const root = ReactDOM.createRoot(document.querySelector('#app'));
+root.render(<Main />);
 
 if (module.hot) {
-	module.hot.accept()
+	module.hot.accept();
 }
