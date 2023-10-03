@@ -1,0 +1,6 @@
+mongodb+srv://taku-code:1234tutorial@cluster0.mqqacbd.mongodb.net/ReactCourse?retryWrites=true&w=majority
+
+
+
+Access key:
+mongodb://taku-code:1234tutorial@ac-nnpkonr-shard-00-00.mqqacbd.mongodb.net:27017,ac-nnpkonr-shard-00-01.mqqacbd.mongodb.net:27017,ac-nnpkonr-shard-00-02.mqqacbd.mongodb.net:27017/ReactCourse?ssl=true&replicaSet=atlas-2jtzqi-shard-0&authSource=admin&retryWrites=true&w=majority
