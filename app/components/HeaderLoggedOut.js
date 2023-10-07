@@ -10,6 +10,9 @@ function HeaderLoggedOut(props) {
 		try {
 			const response = await Axios.post('http://localhost:8080/login', { username, password });
 			if (response.data) {
+				localStorage.setItem('complexappToken', response.data.token);
+				localStorage.setItem('complexappUsername', response.data.username);
+				localStorage.setItem('complexappAvator', response.data.avator);
 				console.log(response.data);
 				props.setLoggedIn(true);
 			} else {

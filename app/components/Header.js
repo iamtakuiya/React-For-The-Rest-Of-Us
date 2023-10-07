@@ -4,7 +4,7 @@ import HeaderLoggedOut from './HeaderLoggedOut';
 import HeaderLoggedIn from './HeaderLoggedIn';
 
 function Header() {
-	const [loggedIn, setLoggedIn] = useState();
+	const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem('complexappToken')));
 
 	return (
 		<>
