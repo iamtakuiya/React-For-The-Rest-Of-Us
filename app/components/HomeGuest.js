@@ -10,7 +10,7 @@ function HomeGuest() {
 	async function handleSubmit(e) {
 		e.preventDefault();
 		try {
-			const response = await Axios.post(`http://localhost:8080/register`, { username, email, password });
+			const response = await Axios.post(`/register`, { username, email, password });
 			console.log('Sign up has been successful' + response.data);
 		} catch (e) {
 			console.log('Something wrong: ' + e);
