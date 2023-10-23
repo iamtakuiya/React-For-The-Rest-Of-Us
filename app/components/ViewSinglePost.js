@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Page from './Page';
 import { useParams, Link } from 'react-router-dom';
 import Axios from 'axios';
+import LoadingDotsIcon from './LoadingDotsIcon';
 
 function ViewSinglePost() {
 	const { id } = useParams();
@@ -10,9 +11,13 @@ function ViewSinglePost() {
 	console.log(post, 'this is post');
 
 	useEffect(() => {
+		const ourRequest = Axios.CancelToken.source();
+
 		async function fetchPost() {
 			try {
-				const response = await Axios.get(`/post/${id}`);
+				const response = await Axios.get(`/post/${id}`, {
+					cancelToken: ourRequest.token
+				});
 				setPost(response.data);
 				console.table(response.data);
 				setIsLoading(false);
@@ -22,9 +27,17 @@ function ViewSinglePost() {
 		}
 
 		fetchPost();
+		return () => {
+			ourRequest.cancel();
+		};
 	}, []);
 
-	if (isLoading) return <Page title="...">Loading...</Page>;
+	if (isLoading)
+		return (
+			<Page title="...">
+				<LoadingDotsIcon />
+			</Page>
+		);
 
 	const date = new Date(post.createdDate);
 	const dateFormatted = `${
