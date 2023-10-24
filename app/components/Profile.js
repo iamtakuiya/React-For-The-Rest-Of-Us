@@ -17,7 +17,7 @@ function Profile() {
 	});
 
 	useEffect(() => {
-		const ourRequest = Axios.CancelToken.resource();
+		const ourRequest = Axios.CancelToken.source();
 
 		async function fetchData() {
 			try {
