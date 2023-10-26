@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useImmerReducer } from 'use-immer';
 import Page from './Page';
 import { useParams, Link } from 'react-router-dom';
 import Axios from 'axios';
 import LoadingDotsIcon from './LoadingDotsIcon';
+import StateContext from '../StateContext';
+import DispatchContext from '../DispatchContext';
 
 function ViewSinglePost() {
+	const appState = useContext(StateContext);
+	const appDispatch = useContext(DispatchContext);
+
 	const originalState = {
 		title: {
 			value: '',
@@ -30,10 +35,30 @@ function ViewSinglePost() {
 				draft.body.value = action.value.body;
 				draft.isFetching = false;
 				return;
+			case 'titleChange':
+				draft.title.value = action.value;
+				return;
+			case 'bodyChange':
+				draft.body.value = action.value;
+				return;
+			case 'submitRequest':
+				draft.sendCount++;
+				return;
+			case 'saveRequestStarted':
+				draft.isSaving = true;
+				return;
+			case 'saveRequestFinished':
+				draft.isSaving = false;
+				return;
 		}
 	}
 
 	const [state, dispatch] = useImmerReducer(ourReducer, originalState);
+
+	function submitHandler(e) {
+		e.preventDefault();
+		dispatch({ type: 'submitRequest' });
+	}
 
 	useEffect(() => {
 		const ourRequest = Axios.CancelToken.source();
@@ -55,6 +80,41 @@ function ViewSinglePost() {
 		};
 	}, []);
 
+	useEffect(() => {
+		if (state.sendCount) {
+			const ourRequest = Axios.CancelToken.source();
+
+			async function fetchPost() {
+				dispatch({ type: 'saveRequestStarted' });
+				try {
+					const response = await Axios.post(
+						`/post/${state.id}/edit`,
+						{
+							title: state.title.value,
+							body: state.body.value,
+							token: appState.user.token
+						},
+						{
+							cancelToken: ourRequest.token
+						}
+					);
+					dispatch({ type: 'saveRequestFinished' });
+					appDispatch({
+						type: 'flashMessage',
+						value: 'Post have been updated.'
+					});
+				} catch (e) {
+					console.log('There was a problem or the request was cancelled.');
+				}
+			}
+
+			fetchPost();
+			return () => {
+				ourRequest.cancel();
+			};
+		}
+	}, [state.sendCount]);
+
 	if (state.isFetching)
 		return (
 			<Page title="...">
@@ -64,12 +124,15 @@ function ViewSinglePost() {
 
 	return (
 		<Page title="Edit Post">
-			<form>
+			<form onSubmit={submitHandler}>
 				<div className="form-group">
 					<label htmlFor="post-title" className="text-muted mb-1">
 						<small>Title</small>
 					</label>
 					<input
+						onChange={(e) =>
+							dispatch({ type: 'titleChange', value: e.target.value })
+						}
 						value={state.title.value}
 						autoFocus
 						name="title"
@@ -86,6 +149,9 @@ function ViewSinglePost() {
 						<small>Body Content</small>
 					</label>
 					<textarea
+						onChange={(e) =>
+							dispatch({ type: 'bodyChange', value: e.target.value })
+						}
 						name="body"
 						id="post-body"
 						className="body-content tall-textarea form-control"
@@ -94,7 +160,9 @@ function ViewSinglePost() {
 					/>
 				</div>
 
-				<button className="btn btn-primary">Save Updates</button>
+				<button className="btn btn-primary" disabled={state.isSaving}>
+					Save Updates
+				</button>
 			</form>
 		</Page>
 	);
