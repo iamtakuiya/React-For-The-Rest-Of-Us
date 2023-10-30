@@ -1,13 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Page from './Page';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
 import LoadingDotsIcon from './LoadingDotsIcon';
 import ReactMarkdown from 'react-markdown';
 import { Tooltip as ReactTooltip } from 'react-tooltip';
 import NotFound from './NotFound';
+import StateContext from '../StateContext';
+import DispatchContext from '../DispatchContext';
 
 function ViewSinglePost() {
+	const navigate = useNavigate();
+	const appState = useContext(StateContext);
+	const appDispatch = useContext(DispatchContext);
 	const { id } = useParams();
 	const [isLoading, setIsLoading] = useState(true);
 	const [post, setPost] = useState();
@@ -51,30 +56,76 @@ function ViewSinglePost() {
 		date.getMonth() + 1
 	}/${date.getDate()}/${date.getFullYear()}`;
 
+	function isOwner() {
+		if (appState.loggedIn) {
+			return appState.user.username == post.author.username;
+		}
+		return false;
+	}
+
+	async function deleteHandler() {
+		const areYouSure = window.confirm(
+			'Do you really want to delete this post?'
+		);
+		if (areYouSure) {
+			try {
+				// This is 500 internal error
+				// const response = await Axios.delete(`/post/${id}`, {
+				// 	headers: {
+				// 		Authorization: `Bearer ${appState.user.token}`
+				// 	}
+				// });
+				const response = await Axios({
+					url: `/post/${id}`,
+					data: { token: appState.user.token },
+					method: 'delete'
+				});
+
+				if (response.data == 'Success') {
+					// 1. display a flash message
+					appDispatch({
+						type: 'flashMessage',
+						value: 'Post was successfully deleted.'
+					});
+
+					/// 2. redirect back to the current user's profile
+					navigate(`/profile/${appState.user.username}`);
+				} else {
+					console.log('Unexpected response: ', response);
+				}
+			} catch (error) {
+				console.log('There was a problem.', error);
+			}
+		}
+	}
+
 	return (
 		<Page title={post.title}>
 			<div className="container container--narrow py-md-5">
 				<div className="d-flex justify-content-between">
 					<h2>{post.title}</h2>
-					<span className="pt-2">
-						<Link
-							to={`/post/${post._id}/edit`}
-							data-tooltip-content="Edit"
-							data-tooltip-id="edit"
-							className="text-primary mr-2"
-						>
-							<i className="fas fa-edit"></i>
-						</Link>
-						<ReactTooltip id="edit" className="tooltip" />{' '}
-						<a
-							data-tooltip-content="Delete"
-							data-tooltip-id="delete"
-							className="delete-post-button text-danger"
-						>
-							<i className="fas fa-trash"></i>
-						</a>
-						<ReactTooltip id="delete" className="custom-tooltip" />
-					</span>
+					{isOwner() && (
+						<span className="pt-2">
+							<Link
+								to={`/post/${post._id}/edit`}
+								data-tooltip-content="Edit"
+								data-tooltip-id="edit"
+								className="text-primary mr-2"
+							>
+								<i className="fas fa-edit"></i>
+							</Link>
+							<ReactTooltip id="edit" className="tooltip" />{' '}
+							<a
+								onClick={deleteHandler}
+								data-tooltip-content="Delete"
+								data-tooltip-id="delete"
+								className="delete-post-button text-danger"
+							>
+								<i className="fas fa-trash"></i>
+							</a>
+							<ReactTooltip id="delete" className="custom-tooltip" />
+						</span>
+					)}
 				</div>
 
 				<p className="text-muted small mb-4">
