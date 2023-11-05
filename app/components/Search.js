@@ -29,7 +29,7 @@ function Search() {
 				setState((draft) => {
 					draft.requestCount++;
 				});
-			}, 3000);
+			}, 750);
 
 			return () => clearTimeout(delay);
 		} else {

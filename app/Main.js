@@ -23,6 +23,8 @@ import Profile from './components/Profile';
 import EditPost from './components/EditPost';
 import NotFound from './components/NotFound';
 import Search from './components/Search';
+import ProfileFollowers from './components/ProfileFollowers';
+import ProfileFollowing from './components/ProfileFollowing';
 
 function Main() {
 	const initialState = {
@@ -78,7 +80,8 @@ function Main() {
 					<FlashMessages messages={state.flashMessages} />
 					<Header />
 					<Routes>
-						<Route path="/profile/:username" element={<Profile />} />
+						{/* <Route path="/profile/:username" element={<Profile />} /> */}
+						<Route path="/profile/:username/*" element={<Profile />} />
 						<Route
 							path="/"
 							element={state.loggedIn ? <Home /> : <HomeGuest />}
