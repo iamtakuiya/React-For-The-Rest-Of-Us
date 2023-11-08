@@ -20,8 +20,8 @@ function HeaderLoggedIn(props) {
 	return (
 		<div className="flex-row my-3 my-md-0">
 			<a
-				data-for="search"
-				data-tip="Search"
+				data-tooltip-id="search"
+				data-tooltip-content="Search"
 				onClick={handleSearchIcon}
 				href="#"
 				className="text-white mr-2 header-search-icon"
@@ -31,8 +31,8 @@ function HeaderLoggedIn(props) {
 			<ReactTooltip place="bottom" id="search" className="custom-tooltip" />{' '}
 			<span
 				onClick={() => appDispatch({ type: 'toggleChat' })}
-				data-for="chat"
-				data-tip="Chat"
+				data-tooltip-id="chat"
+				data-tooltip-content="Chat"
 				className="mr-2 header-chat-icon text-white"
 			>
 				<i className="fas fa-comment"></i>
@@ -40,8 +40,8 @@ function HeaderLoggedIn(props) {
 			</span>
 			<ReactTooltip place="bottom" id="chat" className="custom-tooltip" />{' '}
 			<Link
-				data-for="profile"
-				data-tip="My Profile"
+				data-tooltip-id="profile"
+				data-tooltip-content="Profile"
 				to={`/profile/${appState.user.username}`}
 				className="mr-2"
 			>
