@@ -65,8 +65,7 @@ function Search() {
 			fetchResults();
 			return () => ourRequest.cancel();
 		}
-	}),
-		[state.requestCount];
+	}, [state.requestCount]);
 
 	function searchKeyPressHandler(e) {
 		if (e.keyCode == 27) {
