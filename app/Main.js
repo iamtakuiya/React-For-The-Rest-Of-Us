@@ -4,8 +4,8 @@ import { useImmerReducer } from 'use-immer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import Axios from 'axios';
-Axios.defaults.baseURL = 'http://localhost:8080';
-
+Axios.defaults.baseURL = process.env.BACKENDURL || 'http://localhost:8080';
+console.log(Axios.defaults.baseURL);
 import StateContext from './StateContext';
 import DispatchContext from './DispatchContext';
 
@@ -20,11 +20,11 @@ import Terms from './components/Terms';
 const CreatePost = React.lazy(() => import('./components/CreatePost'));
 const ViewSinglePost = React.lazy(() => import('./components/ViewSinglePost'));
 const Search = React.lazy(() => import('./components/Search'));
+const Chat = React.lazy(() => import('./components/Chat'));
 import FlashMessages from './components/FlashMessages';
 import Profile from './components/Profile';
 import EditPost from './components/EditPost';
 import NotFound from './components/NotFound';
-import Chat from './components/Chat';
 
 function Main() {
 	const initialState = {
@@ -148,12 +148,12 @@ function Main() {
 						unmountOnExit
 					>
 						<div className="search-overlay">
-							<Suspense>
+							<Suspense fallback="">
 								<Search />
 							</Suspense>
 						</div>
 					</CSSTransition>
-					<Chat />
+					<Suspense fallback="">{state.loggedIn && <Chat />}</Suspense>
 					<Footer />
 				</BrowserRouter>
 			</DispatchContext.Provider>

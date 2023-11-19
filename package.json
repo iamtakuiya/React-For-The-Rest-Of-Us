@@ -4,7 +4,11 @@
 	"description": "",
 	"main": "test.js",
 	"scripts": {
-		"dev": "webpack serve --open",
+		"dev": "npm-run-all -s generate webpackDev",
+		"build": "npm-run-all -s generate webpackBuild",
+		"webpackDev": "webpack serve --open",
+		"webpackBuild": "webpack",
+		"previewDist": "node previewDist",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
