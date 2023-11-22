@@ -4,8 +4,9 @@ import { useImmerReducer } from 'use-immer';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { CSSTransition } from 'react-transition-group';
 import Axios from 'axios';
-Axios.defaults.baseURL = process.env.BACKENDURL || 'http://localhost:8080';
-console.log(Axios.defaults.baseURL);
+Axios.defaults.baseURL =
+	process.env.BACKENDURL || 'https://react-for-rest-of-us-app.onrender.com';
+// console.log(Axios.defaults.baseURL);
 import StateContext from './StateContext';
 import DispatchContext from './DispatchContext';
 

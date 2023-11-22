@@ -33,7 +33,9 @@ function Chat() {
 
 	// Reflect Chat window message
 	useEffect(() => {
-		socket.current = io('https://localhost:8080');
+		socket.current = io(
+			process.env.BACKENDURL || 'https://react-for-rest-of-us-app.onrender.com'
+		);
 
 		socket.current.on('chatFromServer', (message) => {
 			setState((draft) => {
